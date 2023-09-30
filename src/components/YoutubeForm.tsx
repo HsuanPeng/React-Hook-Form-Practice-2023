@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { DevTool } from "@hookform/devtools"; // 從畫面監看表單資料
 
@@ -17,7 +18,10 @@ type FormValues = {
   dob: Date;
 };
 
+let renderCount = 0;
+
 const YoutubeForm = () => {
+  renderCount++;
   const form = useForm<FormValues>({
     // 預設值可直接設定，或由async function取得
     defaultValues: async () => {
@@ -40,7 +44,7 @@ const YoutubeForm = () => {
       };
     },
   });
-  const { register, control, handleSubmit, formState } = form;
+  const { register, control, handleSubmit, formState, watch } = form;
   const { errors } = formState;
 
   const { fields, append, remove } = useFieldArray({
@@ -52,8 +56,21 @@ const YoutubeForm = () => {
     console.log("onSubmit", data);
   };
 
+  // const watchUsername = watch();
+
+  // 監聽表單資料
+  useEffect(() => {
+    const subscription = watch((value) => {
+      console.log(value);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
   return (
     <div>
+      <h1>Render times：({renderCount})</h1>
+      {/* <h2>Watch Values：{JSON.stringify(watchUsername)}</h2> */}
       <form onSubmit={handleSubmit(onSubmitData)} noValidate>
         <div className="form-control">
           <label htmlFor="username">Username</label>
