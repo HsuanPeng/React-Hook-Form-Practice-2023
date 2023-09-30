@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { DevTool } from "@hookform/devtools"; // 從畫面監看表單資料
+import { h } from "vue";
 
 type FormValues = {
   username: string;
@@ -44,7 +45,15 @@ const YoutubeForm = () => {
       };
     },
   });
-  const { register, control, handleSubmit, formState, watch } = form;
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState,
+    watch,
+    getValues,
+    setValue,
+  } = form;
   const { errors } = formState;
 
   const { fields, append, remove } = useFieldArray({
@@ -59,13 +68,26 @@ const YoutubeForm = () => {
   // const watchUsername = watch();
 
   // 監聽表單資料
-  useEffect(() => {
-    const subscription = watch((value) => {
-      console.log(value);
-    });
+  // useEffect(() => {
+  //   const subscription = watch((value) => {
+  //     console.log(value);
+  //   });
 
-    return () => subscription.unsubscribe();
-  }, [watch]);
+  //   return () => subscription.unsubscribe();
+  // }, [watch]);
+
+  const handleGetValues = () => {
+    console.log(getValues()); // 獲取所有表單資料
+    console.log(getValues(["username", "email"])); // 獲取指定表單資料
+  };
+
+  const handleSetValue = () => {
+    setValue("username", "Lisaaaa", {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  };
 
   return (
     <div>
@@ -226,6 +248,14 @@ const YoutubeForm = () => {
         </div>
 
         <button>Submit</button>
+
+        <button type="button" onClick={handleGetValues}>
+          getValues
+        </button>
+
+        <button type="button" onClick={handleSetValue}>
+          setValues
+        </button>
       </form>
       <DevTool control={control} />
     </div>
