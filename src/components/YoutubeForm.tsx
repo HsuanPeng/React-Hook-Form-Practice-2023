@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
+import { DevTool } from "@hookform/devtools"; // 從畫面監看表單資料
 
 type FormValues = {
   username: string;
@@ -43,6 +43,20 @@ const YoutubeForm = () => {
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                 message: "invalid email",
+              },
+              validate: {
+                // 自訂驗證規則，function名稱隨意
+                notAdmin: (value) => {
+                  return (
+                    value !== "admin@example.com" || "admin is not allowed" // value不等於admin@example.com時回傳使用者輸入值
+                  );
+                },
+                notBlackListed: (value) => {
+                  return (
+                    !value.endsWith("baddomain.com") ||
+                    "This domain is not supported"
+                  );
+                },
               },
             })}
           />
