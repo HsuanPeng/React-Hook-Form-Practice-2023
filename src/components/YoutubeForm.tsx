@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import { useForm, useFieldArray, useWatch, FieldErrors } from "react-hook-form";
 import { DevTool } from "@hookform/devtools"; // 從畫面監看表單資料
 
 type FormValues = {
@@ -53,7 +53,7 @@ const YoutubeForm = () => {
     getValues,
     setValue,
   } = form;
-  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+  const { errors, touchedFields, dirtyFields, isDirty, isValid } = formState;
 
   console.log("touchedFields", touchedFields); // 使用者是否有觸碰過該欄位
   console.log("dirtyFields", dirtyFields); // 使用者是否有修改過該欄位
@@ -92,7 +92,7 @@ const YoutubeForm = () => {
     });
   };
 
-  const onError = (errors) => {
+  const onError = (errors: FieldErrors<FormValues>) => {
     console.log("onError", errors);
   };
 
@@ -262,7 +262,7 @@ const YoutubeForm = () => {
           <p className="error">{errors.dob?.message}</p>
         </div>
 
-        <button>Submit</button>
+        <button disabled={!isDirty || !isValid}>Submit</button>
 
         <button type="button" onClick={handleGetValues}>
           getValues
