@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useEffect, useMemo } from "react";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { DevTool } from "@hookform/devtools"; // 從畫面監看表單資料
-import { h } from "vue";
 
 type FormValues = {
   username: string;
@@ -54,7 +53,11 @@ const YoutubeForm = () => {
     getValues,
     setValue,
   } = form;
-  const { errors } = formState;
+  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+
+  console.log("touchedFields", touchedFields); // 使用者是否有觸碰過該欄位
+  console.log("dirtyFields", dirtyFields); // 使用者是否有修改過該欄位
+  console.log("isDirty", isDirty); // 使用者是否有修改過表單
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -68,13 +71,13 @@ const YoutubeForm = () => {
   // const watchUsername = watch();
 
   // 監聽表單資料
-  // useEffect(() => {
-  //   const subscription = watch((value) => {
-  //     console.log(value);
-  //   });
+  useEffect(() => {
+    const subscription = watch((value) => {
+      console.log(value);
+    });
 
-  //   return () => subscription.unsubscribe();
-  // }, [watch]);
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const handleGetValues = () => {
     console.log(getValues()); // 獲取所有表單資料
@@ -89,16 +92,21 @@ const YoutubeForm = () => {
     });
   };
 
+  const onError = (errors) => {
+    console.log("onError", errors);
+  };
+
   return (
     <div>
       <h1>Render times：({renderCount})</h1>
       {/* <h2>Watch Values：{JSON.stringify(watchUsername)}</h2> */}
-      <form onSubmit={handleSubmit(onSubmitData)} noValidate>
+      <form onSubmit={handleSubmit(onSubmitData, onError)} noValidate>
         <div className="form-control">
           <label htmlFor="username">Username</label>
           <input
             type="text"
             id="username"
+            disabled // 禁用欄位
             {...register("username", {
               required: {
                 value: true,
@@ -155,7 +163,14 @@ const YoutubeForm = () => {
 
         <div className="form-control">
           <label htmlFor="twitter">twitter</label>
-          <input type="text" id="twitter" {...register("social.twitter")} />
+          <input
+            type="text"
+            id="twitter"
+            {...register("social.twitter", {
+              // disabled: !!channelInput,
+              required: "Enter twitter profile",
+            })}
+          />
         </div>
 
         <div className="form-control">
