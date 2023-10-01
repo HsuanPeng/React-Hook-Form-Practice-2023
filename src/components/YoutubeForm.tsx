@@ -46,6 +46,7 @@ const YoutubeForm = () => {
         dob: new Date(),
       };
     },
+    mode: "onBlur", // 何時驗證表單，可選擇onBlur、onChange，預設是onSubmit
   });
 
   // 取出方法
@@ -58,6 +59,7 @@ const YoutubeForm = () => {
     getValues,
     setValue,
     reset,
+    trigger,
   } = form;
 
   // 取出狀態
@@ -134,7 +136,7 @@ const YoutubeForm = () => {
           <input
             type="text"
             id="username"
-            disabled // 禁用欄位
+            // disabled // 禁用欄位
             {...register("username", {
               required: {
                 value: true,
@@ -298,6 +300,10 @@ const YoutubeForm = () => {
 
         <button type="button" onClick={handleSetValue}>
           setValues
+        </button>
+
+        <button type="button" onClick={() => trigger("channel")}>
+          Validate
         </button>
 
         <button type="button" onClick={() => reset()}>
